@@ -1,4 +1,4 @@
-const { add_to_routes, parse_query, decorate_response } = require("../utilities/utilities");
+const { add_to_routes, parse_query, decorate_response, run_middlewares } = require("../utilities/utilities");
 
 class Router {
     // #routes
@@ -30,13 +30,13 @@ class Router {
         const url = new URL(`http://${req.url}`);
         req.query = parse_query(url.searchParams);
         const route = this.routes.find(route => route.path === `${url.pathname}${url.host}` && method === method)
-        console.log(route);
         if (!route) {
             res.writeHead(404, { "Content-Type": "text/plain" });
             res.end("No route was found for the provided path")
             throw new Error("No route was found for the provided path");
         }
-        route.handler(req, res);
+        run_middlewares(this.middlewares, req, res, route.handler)
+        // route.handler(req, res);
     }
 };
 module.exports = Router;

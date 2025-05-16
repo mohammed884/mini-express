@@ -20,10 +20,23 @@ function add_to_routes(routes, method, path, handler) {
     */
     routes.push({ method: method || "get", path, handler });
 };
-function run_middlewares(middlewares, req, res, index = 0) {
-    if (index >= middlewares.length) return next();
-    const middleware_to_execute = middlewares[index];
-    middleware_to_execute(middlewares, req, res, index + 1);
+// function run_middlewares(middlewares, req, res, finalHandler, index = 0) {
+//     if (index >= middlewares.length) return finalHandler(req, res);
+//     const middleware_to_execute = middlewares[index];
+//     middleware_to_execute(req, res, () => run_middlewares(middlewares, req, res, finalHandler, index + 1));
+// }
+function run_middlewares(middlewares, req, res, finalHandler) {
+    let index = 0;
+    function next() {
+        if (index < middlewares.length) {
+            const middleware_to_execute = middlewares[index];
+            index++;
+            middleware_to_execute(req, res, next);
+        } else {
+            finalHandler(req, res);
+        }
+    }
+    next();
 }
 function parse_body() {
 
