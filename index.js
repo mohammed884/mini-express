@@ -7,7 +7,10 @@ const loggedIn = (req, res, next) => {
     next();
 }
 app.use(loggedIn);
-app.get("/test", (req, res) => {
+app.get("/test/:article/:user", (req, res) => {
+    res.status(201).send("Hello");
+})
+app.get("/test/:id/:version", (req, res) => {
     res.status(201).send("Hello");
 })
 http.createServer(app.handler).listen(3000, () => {

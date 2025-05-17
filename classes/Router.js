@@ -1,8 +1,7 @@
+import { decorate_response } from "../utilities/response.js";
+import { add_to_routes, extract_params_values, find_route, parse_query } from "../utilities/routes.js";
 import {
-    add_to_routes,
-    parse_query,
-    decorate_response,
-    run_middlewares
+    run_middlewares,
 } from "../utilities/utilities.js";
 
 class Router {
@@ -30,13 +29,17 @@ class Router {
         decorate_response(res);
         const { method } = req;
         const url = new URL(`http://${req.url}`);
-        req.query = parse_query(url.searchParams);
-        const route = this.routes.find(route => route.path === `${url.pathname}${url.host}` && method === method)
-        if (!route) {
+        const rotueData = find_route(this.routes, `/${url.host}${url.pathname}`, method);
+
+        if (!rotueData) {
             res.status(404).send("No route was found");
             throw new Error("No route was found for the provided path");
-        }
-        run_middlewares(this.middlewares, req, res, route.handler)
+        };
+        req.params = rotueData.params;
+        req.query = parse_query(url.searchParams);
+        console.log(req.params);
+
+        run_middlewares(this.middlewares, req, res, rotueData.route.handler)
     }
 };
 export default Router;
