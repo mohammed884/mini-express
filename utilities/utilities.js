@@ -51,8 +51,10 @@ function decorate_response(res) {
         switch (typeof body) {
             case "string":
                 this.setHeader('Content-Type', 'text/plain');
+                break;
             case "object":
                 this.setHeader('Content-Type', 'application/json');
+                break;
             default:
                 this.setHeader('Content-Type', 'text/plain');
         }
@@ -63,6 +65,9 @@ function decorate_response(res) {
         this.setHeader("Content-Type", "application/json");
         this.end(JSON.stringify(body));
     }
+}
+function no_route() {
+
 }
 module.exports = {
     parse_query,

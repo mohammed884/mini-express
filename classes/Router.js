@@ -31,8 +31,7 @@ class Router {
         req.query = parse_query(url.searchParams);
         const route = this.routes.find(route => route.path === `${url.pathname}${url.host}` && method === method)
         if (!route) {
-            res.writeHead(404, { "Content-Type": "text/plain" });
-            res.end("No route was found for the provided path")
+            res.status(404).send("No route was found");
             throw new Error("No route was found for the provided path");
         }
         run_middlewares(this.middlewares, req, res, route.handler)
