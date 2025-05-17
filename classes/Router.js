@@ -1,14 +1,16 @@
-const { add_to_routes, parse_query, decorate_response, run_middlewares } = require("../utilities/utilities");
+import {
+    add_to_routes,
+    parse_query,
+    decorate_response,
+    run_middlewares
+} from "../utilities/utilities.js";
 
 class Router {
-    // #routes
-    // #middlewares
     constructor() {
         this.routes = [];
         this.middlewares = [];
         this.handler = this.handler.bind(this);
     };
-
     use(middlware) {
         this.middlewares.push(middlware);
     };
@@ -35,7 +37,6 @@ class Router {
             throw new Error("No route was found for the provided path");
         }
         run_middlewares(this.middlewares, req, res, route.handler)
-        // route.handler(req, res);
     }
 };
-module.exports = Router;
+export default Router;

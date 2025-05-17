@@ -1,13 +1,13 @@
-const http = require("node:http");
-const Router = require("./classes/Router.js");
+import http from "node:http"
+import Router from "./classes/Router.js";
 const app = new Router();
-
-app.use((req, res, next) => {
-    console.log("test middleware");
+const isLoggedIn = false;
+const loggedIn = (req, res, next) => {
+    if (!isLoggedIn) return res.send("MF you need to be logged in")
     next();
-})
+}
+app.use(loggedIn);
 app.get("/test", (req, res) => {
-    console.log("Route handler called");
     res.status(201).send("Hello");
 })
 http.createServer(app.handler).listen(3000, () => {

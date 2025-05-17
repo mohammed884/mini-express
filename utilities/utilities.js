@@ -1,4 +1,4 @@
-function parse_query(search_params) {
+export function parse_query(search_params) {
     const query = {};
     const pairs = search_params.entries();
     for (const [key, value] of pairs) {
@@ -6,7 +6,7 @@ function parse_query(search_params) {
     }
     return query;
 };
-function add_to_routes(routes, method, path, handler) {
+export function add_to_routes(routes, method, path, handler) {
     if (!path) throw new Error("Route requires a path");
     if (!handler) throw new Error("Route requires a handler");
     let hasParams = false;
@@ -20,12 +20,7 @@ function add_to_routes(routes, method, path, handler) {
     */
     routes.push({ method: method || "get", path, handler });
 };
-// function run_middlewares(middlewares, req, res, finalHandler, index = 0) {
-//     if (index >= middlewares.length) return finalHandler(req, res);
-//     const middleware_to_execute = middlewares[index];
-//     middleware_to_execute(req, res, () => run_middlewares(middlewares, req, res, finalHandler, index + 1));
-// }
-function run_middlewares(middlewares, req, res, finalHandler) {
+export function run_middlewares(middlewares, req, res, finalHandler) {
     let index = 0;
     function next() {
         if (index < middlewares.length) {
@@ -38,10 +33,10 @@ function run_middlewares(middlewares, req, res, finalHandler) {
     }
     next();
 }
-function parse_body() {
+export function parse_body() {
 
 };
-function decorate_response(res) {
+export function decorate_response(res) {
     res.status = function (code) {
         this.statusCode = code;
         return this;
@@ -57,21 +52,13 @@ function decorate_response(res) {
                 break;
             default:
                 this.setHeader('Content-Type', 'text/plain');
-        }
-        this.end(typeof body === 'string' ? body : JSON.stringify(body));
+        };
+        const response = typeof body === 'string' ? body : JSON.stringify(body);
+        this.end(response);
     };
     res.json = function (body) {
         if (!body) throw new Error("[res.json] requires a body to send!");
         this.setHeader("Content-Type", "application/json");
         this.end(JSON.stringify(body));
     }
-}
-function no_route() {
-
-}
-module.exports = {
-    parse_query,
-    add_to_routes,
-    run_middlewares,
-    decorate_response,
-}
+};
